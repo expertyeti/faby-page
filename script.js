@@ -300,3 +300,4 @@ nextBtn.addEventListener('click', () => {
         carousel.scrollLeft = 0;
     }
 });
+// prueba wei por que esta madre se rompio wei
