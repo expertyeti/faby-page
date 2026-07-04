@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faby - Inicio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="discord-card" id="discord-card">
+        <div class="banner">
+            <a href="https://discord.com/users/1287723093770506253" target="_blank" class="banner-btn" title="Perfil de Discord">
+                <i class="fa-solid fa-user-plus"></i>
+            </a>
+        </div>
+        
+        <div class="profile-header">
+            <div class="pfp-container">
+                <img src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Foto de perfil" class="pfp" id="pfp-image">
+                <div class="status-indicator" id="status-indicator"></div>
+            </div>
+        </div>
+
+        <div class="user-info-container">
+            <div class="user-info">
+                <h2 id="display-name">Cargando...</h2>
+                <span class="username" id="display-username">@cargando</span>
+                
+                <div class="divider"></div>
+                
+                <h3>Sobre mí</h3>
+                <p class="about-text">
+                    Olis soy Faby soy un artista independiente con poco tiempo libre me gusta dibujar, componer música y jugar juego a lo pendejo ⤷₊˚
+                </p>
+                
+                <div id="rpc-container" style="display: none;">
+                    <h3>Actualmente haciendo:</h3>
+                    <div class="rpc-box">
+                        <div class="rpc-image-wrapper">
+                            <img src="https://cdn.discordapp.com/embed/avatars/0.png" class="rpc-image" id="rpc-main-img" alt="Actividad">
+                            <img src="" class="rpc-sub-image" id="rpc-sub-img" style="display: none;" alt="Sub Actividad">
+                        </div>
+                        <div class="rpc-details">
+                            <strong id="rpc-name">Aplicación</strong>
+                            <span id="rpc-details">Detalles</span>
+                            <span id="rpc-state">Estado</span>
+                            <span id="rpc-time" class="rpc-timer">00:00 transcurridos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <h3>Redes Sociales</h3>
+                <div class="social-buttons">
+                    <a href="https://x.com/Fab4Arts" target="_blank" class="btn btn-twitter">
+                        <i class="fa-brands fa-x-twitter"></i> Twitter / X
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+</html>
