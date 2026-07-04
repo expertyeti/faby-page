@@ -9,15 +9,15 @@
     --status-offline: #80848e;
 }
 
-/* Barra de scroll */
+/* Barra de scroll interna de la card */
 ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
 }
 ::-webkit-scrollbar-track {
     background: var(--color-5);
 }
 ::-webkit-scrollbar-thumb {
-    background: var(--color-4);
+    background: var(--color-3);
     border-radius: 4px;
 }
 
@@ -31,28 +31,36 @@ body {
     min-height: 100vh;
     margin: 0;
     padding: 20px;
-    /* Perspectiva necesaria para habilitar la profundidad del efecto 3D Parallax */
     perspective: 1000px; 
+    overflow: hidden; 
 }
 
-/* Tarjeta Sólida con soporte de transformaciones 3D */
+#particle-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Tarjeta con Scroll Y interno */
 .discord-card {
     background-color: var(--color-4); 
     width: 340px;
+    max-height: 550px; 
+    overflow-y: auto;  
     border-radius: 12px;
-    overflow: hidden;
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
     border: 2px solid var(--color-3); 
     position: relative;
     
-    /* Propiedades para el efecto Parallax suave */
     transform-style: preserve-3d;
     will-change: transform;
-    /* Una transición suave integrada para cuando el mouse entra, se mueve o sale de la card */
-    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+    transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s ease;
 }
 
-/* Banner Sólido */
 .banner {
     height: 120px;
     background-color: var(--color-1); 
@@ -86,7 +94,6 @@ body {
 
 .profile-header {
     padding: 0 16px;
-    position: relative;
 }
 
 .pfp-container {
@@ -106,7 +113,6 @@ body {
     object-fit: cover;
 }
 
-/* Círculo indicador de estado con borde restaurado intacto */
 .status-indicator {
     position: absolute;
     bottom: 4px; 
@@ -140,12 +146,38 @@ body {
     color: #ffffff; 
 }
 
+.username-badge-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+}
+
 .username {
     font-size: 14px;
     color: var(--color-1); 
     font-weight: 500;
-    display: block;
-    margin-top: 2px;
+}
+
+/* Etiqueta Artist Compacta */
+.artist-clan-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background-color: var(--color-4);
+    border: 1px solid var(--color-3);
+    color: var(--color-1);
+    padding: 1.5px 5px; 
+    border-radius: 4px; 
+    font-size: 9px; 
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.artist-clan-badge img {
+    width: 10px; 
+    height: 10px;
+    object-fit: contain;
 }
 
 .divider {
@@ -171,7 +203,6 @@ p.about-text {
     opacity: 0.9;
 }
 
-/* Caja de Actividad Sólida */
 .rpc-box {
     background-color: var(--color-4); 
     padding: 12px;
@@ -237,6 +268,108 @@ p.about-text {
     color: var(--color-2) !important; 
 }
 
+/* --- CARRUSEL DE JUEGOS --- */
+.carousel-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.games-carousel {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto; 
+    width: 100%;
+    padding: 4px 0;
+    scrollbar-width: none; 
+}
+.games-carousel::-webkit-scrollbar {
+    display: none; 
+}
+
+.game-card {
+    background-color: var(--color-4);
+    border: 1px solid var(--color-3);
+    width: 110px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 8px;
+    box-sizing: border-box;
+}
+
+/* MODIFICACIÓN CLAVE: Muestra la imagen completa sin recortar ni deformar */
+.game-card img {
+    width: 100%;
+    height: 65px;
+    object-fit: contain; /* Ajusta la imagen completa al contenedor */
+    background-color: rgba(13, 12, 22, 0.25); /* Relleno oscuro elegante si la imagen no es 16:9 */
+    margin-bottom: 6px;
+}
+
+.game-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #ffffff;
+    text-align: center;
+    white-space: normal;
+    padding: 0 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.badge-retired {
+    border-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(20, 19, 36, 0.3);
+}
+
+.retired-tag {
+    font-size: 8px;
+    color: var(--color-1);
+    background-color: var(--color-5);
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-weight: normal;
+    margin-top: 1px;
+}
+
+.carousel-control-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: var(--color-5); 
+    color: #ffffff;
+    border: 1px solid var(--color-3); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 11px;
+    z-index: 5;
+    transition: background-color 0.2s, color 0.2s, transform 0.1s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.carousel-control-btn:hover {
+    background-color: var(--color-1); 
+    color: var(--color-5);
+}
+.carousel-control-btn:active {
+    transform: translateY(-50%) scale(0.92);
+}
+
+.btn-prev { left: -6px; }
+.btn-next { right: -6px; }
+
 .social-buttons {
     margin-top: 8px;
 }
@@ -260,11 +393,5 @@ p.about-text {
     background-color: var(--color-3); 
     color: var(--color-5); 
 }
-
-.btn-twitter:hover {
-    filter: brightness(1.15);
-}
-
-.btn-twitter:active {
-    transform: scale(0.98);
-}
+.btn-twitter:hover { filter: brightness(1.15); }
+.btn-twitter:active { transform: scale(0.98); }

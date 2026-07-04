@@ -9,6 +9,8 @@
 </head>
 <body>
 
+    <canvas id="particle-canvas"></canvas>
+
     <div class="discord-card" id="discord-card">
         <div class="banner">
             <a href="https://discord.com/users/1287723093770506253" target="_blank" class="banner-btn" title="Perfil de Discord">
@@ -26,7 +28,14 @@
         <div class="user-info-container">
             <div class="user-info">
                 <h2 id="display-name">Cargando...</h2>
-                <span class="username" id="display-username">@cargando</span>
+                
+                <div class="username-badge-row">
+                    <span class="username" id="display-username">@cargando</span>
+                    <div class="artist-clan-badge">
+                        <img src="https://cdn.discordapp.com/clan-badges/1202336147007610960/8d61abb8b5da075befaff858861dba54.png?size=16" alt="Clan Badge">
+                        <span>ARTIST</span>
+                    </div>
+                </div>
                 
                 <div class="divider"></div>
                 
@@ -49,6 +58,50 @@
                             <span id="rpc-time" class="rpc-timer">00:00 transcurridos</span>
                         </div>
                     </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <h3>Videojuegos Favoritos</h3>
+                <div class="carousel-wrapper">
+                    <button class="carousel-control-btn btn-prev" id="carousel-prev" title="Anterior">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    
+                    <div class="games-carousel" id="games-carousel">
+                        <div class="game-card">
+                            <img src="assets/fnf.webp" alt="Friday Night Funkin'">
+                            <span class="game-title">Friday Night Funkin'</span>
+                        </div>
+                        <div class="game-card badge-retired">
+                            <img src="assets/osu.webp" alt="osu!">
+                            <span class="game-title">osu! <span class="retired-tag">Retirado</span></span>
+                        </div>
+                        <div class="game-card">
+                            <img src="assets/geometry_dash.webp" alt="Geometry Dash">
+                            <span class="game-title">Geometry Dash</span>
+                        </div>
+                        <div class="game-card">
+                            <img src="assets/oneshot.webp" alt="OneShot">
+                            <span class="game-title">OneShot</span>
+                        </div>
+                        <div class="game-card">
+                            <img src="assets/deltarune.webp" alt="Deltarune">
+                            <span class="game-title">Deltarune</span>
+                        </div>
+                        <div class="game-card">
+                            <img src="assets/pvz.webp" alt="Plants vs. Zombies">
+                            <span class="game-title">Plants vs. Zombies</span>
+                        </div>
+                        <div class="game-card">
+                            <img src="assets/balatro.webp" alt="Balatro">
+                            <span class="game-title">Balatro</span>
+                        </div>
+                    </div>
+                    
+                    <button class="carousel-control-btn btn-next" id="carousel-next" title="Siguiente">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
                 </div>
 
                 <div class="divider"></div>

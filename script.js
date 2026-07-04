@@ -143,55 +143,160 @@ async function updateDiscordStatus() {
     }
 }
 
-// Loop de actualización de presencia cada 5 segundos
 updateDiscordStatus();
 setInterval(updateDiscordStatus, 5000);
 
 
 /* ==========================================================================
-   SISTEMA DE INTERACCIÓN PARALLAX / TILT (PC Y DISPOSITIVOS MÓVILES)
-   ========================================================================== */
+   SISTEMA PARALLAX GLOBAL E INCLINACIÓN TRIDIMENSIONAL
+   ========================================================================= */
 const card = document.getElementById('discord-card');
-const MAX_TILT_DEG = 8; // Ángulo máximo muy sutil para que no se incline de forma exagerada
+const MAX_TILT_DEG = 10; 
+let globalMouseX = 0;
+let globalMouseY = 0;
 
-// 1. EFECTO PARALLAX DE ESCRITORIO (MOUSEMOVE)
-card.addEventListener('mousemove', (e) => {
-    const rect = card.getBoundingClientRect();
+window.addEventListener('mousemove', (e) => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
     
-    // Calcular coordenadas del cursor relativas al centro de la tarjeta (-0.5 a 0.5)
-    const positionX = (e.clientX - rect.left) / rect.width - 0.5;
-    const positionY = (e.clientY - rect.top) / rect.height - 0.5;
+    const positionX = (e.clientX / width) - 0.5;
+    const positionY = (e.clientY / height) - 0.5;
     
-    // Calcular rotaciones físicas (El eje Y maneja la inclinación horizontal, el eje X la vertical)
+    globalMouseX = positionX;
+    globalMouseY = positionY;
+    
     const rotateY = (positionX * MAX_TILT_DEG * 2).toFixed(2);
     const rotateX = (-positionY * MAX_TILT_DEG * 2).toFixed(2);
     
-    // Aplicar transformación 3D instantánea suavizada por el CSS transition
     card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-    card.style.boxShadow = `${-rotateY}px ${rotateX}px 50px rgba(0, 0, 0, 0.55)`;
+    card.style.boxShadow = `${-rotateY * 1.5}px ${rotateX * 1.5}px 45px rgba(0, 0, 0, 0.5)`;
 });
 
-// REGRESO AUTOMÁTICO: Cuando el mouse sale de la tarjeta, vuelve perfectamente a su origen
-card.addEventListener('mouseleave', () => {
+document.addEventListener('mouseleave', () => {
     card.style.transform = 'rotateX(0deg) rotateY(0deg)';
     card.style.boxShadow = '0 16px 40px rgba(0, 0, 0, 0.4)';
+    globalMouseX = 0;
+    globalMouseY = 0;
 });
 
 
-// 2. EFECTO GIROSCOPIO DE TELÉFONOS (DEVICE ORIENTATION)
-window.addEventListener('deviceorientation', (e) => {
-    // Si el dispositivo no tiene soporte físico de giroscopio o los datos vienen vacíos
-    if (e.beta === null || e.gamma === null) return;
-    
-    // beta representa la inclinación hacia adelante/atrás (-180 a 180). Normal holding ~60deg.
-    // gamma representa la inclinación hacia izquierda/derecha (-90 a 90). Normal holding ~0deg.
-    const clampedBeta = Math.min(Math.max(e.beta - 60, -25), 25); 
-    const clampedGamma = Math.min(Math.max(e.gamma, -25), 25);
-    
-    // Multiplicador bajo (0.25) para lograr un desplazamiento muy sutil al mover el móvil
-    const rotateX = (clampedBeta * 0.25).toFixed(2);
-    const rotateY = (clampedGamma * 0.25).toFixed(2);
-    
-    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-    card.style.boxShadow = `${-rotateY}px ${rotateX}px 45px rgba(0, 0, 0, 0.45)`;
+/* ==========================================================================
+   MOTOR DE PARTÍCULAS (ESTRELLAS / COPOS EN FUSIÓN DE INERCIA)
+   ========================================================================== */
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+let particlesArray = [];
+const numberOfParticles = 65;
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+class Particle {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.5; 
+        this.speedY = Math.random() * 0.4 + 0.1; 
+        this.opacity = Math.random() * 0.5 + 0.3; 
+    }
+    update() {
+        this.y += this.speedY;
+        if (this.y > canvas.height) {
+            this.y = 0;
+            this.x = Math.random() * canvas.width;
+        }
+    }
+    draw() {
+        ctx.beginPath();
+        const parallaxX = this.x + (globalMouseX * -35 * this.size);
+        const parallaxY = this.y + (globalMouseY * -35 * this.size);
+        ctx.arc(parallaxX, parallaxY, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(171, 201, 253, ${this.opacity})`; 
+        ctx.fill();
+    }
+}
+
+function initParticles() {
+    particlesArray = [];
+    for (let i = 0; i < numberOfParticles; i++) {
+        particlesArray.push(new Particle());
+    }
+}
+
+function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < particlesArray.length; i++) {
+        particlesArray[i].update();
+        particlesArray[i].draw();
+    }
+    requestAnimationFrame(animateParticles);
+}
+initParticles();
+animateParticles();
+
+
+/* ==========================================================================
+   LÓGICA DEL CARRUSEL RESPONSIVA E INTELIGENTE
+   ========================================================================== */
+const carousel = document.getElementById('games-carousel');
+const prevBtn = document.getElementById('carousel-prev');
+const nextBtn = document.getElementById('carousel-next');
+
+const isMobileDevice = window.matchMedia("(pointer: coarse)").matches;
+let isCarouselHovered = false;
+const scrollSpeedPixel = 0.6;
+
+if (!isMobileDevice) {
+    // COMPORTAMIENTO PC: LOOP INFINITO
+    const originalCards = Array.from(carousel.children);
+    originalCards.forEach(cardNode => {
+        const clone = cardNode.cloneNode(true);
+        carousel.appendChild(clone);
+    });
+
+    function autoScrollCarouselLoop() {
+        if (!isCarouselHovered) {
+            carousel.scrollLeft += scrollSpeedPixel;
+            if (carousel.scrollLeft >= carousel.scrollWidth / 2) {
+                carousel.scrollLeft = 0;
+            }
+        }
+        requestAnimationFrame(autoScrollCarouselLoop);
+    }
+    requestAnimationFrame(autoScrollCarouselLoop);
+
+    const pauseCarousel = () => isCarouselHovered = true;
+    const resumeCarousel = () => isCarouselHovered = false;
+
+    carousel.addEventListener('mouseenter', pauseCarousel);
+    carousel.addEventListener('mouseleave', resumeCarousel);
+    prevBtn.addEventListener('mouseenter', pauseCarousel);
+    prevBtn.addEventListener('mouseleave', resumeCarousel);
+    nextBtn.addEventListener('mouseenter', pauseCarousel);
+    nextBtn.addEventListener('mouseleave', resumeCarousel);
+
+} else {
+    // COMPORTAMIENTO TELÉFONOS: SIN LOOP, SCROLL TÁCTIL SUAVE
+    carousel.style.scrollSnapType = "x mandatory";
+    Array.from(carousel.children).forEach(cardNode => {
+        cardNode.style.scrollSnapAlign = "start";
+    });
+}
+
+prevBtn.addEventListener('click', () => {
+    carousel.scrollBy({ left: -120, behavior: 'smooth' });
+    if (!isMobileDevice && carousel.scrollLeft <= 0) {
+        carousel.scrollLeft = carousel.scrollWidth / 2;
+    }
+});
+
+nextBtn.addEventListener('click', () => {
+    carousel.scrollBy({ left: 120, behavior: 'smooth' });
+    if (!isMobileDevice && carousel.scrollLeft >= carousel.scrollWidth / 2) {
+        carousel.scrollLeft = 0;
+    }
 });
